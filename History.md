@@ -1,3 +1,42 @@
+## v0.21.1 “SlugScope”
+
+* Added URL slugs for posts (i.e. `/posts/xyz/my-post-slug`).
+* i18n files clean-up.
+* Added post downvote setting.
+* Renamed `post_upvote` template to `post_vote`.
+* Refactored notifications code.
+* Added `kadira-debug` package.
+* Fixed avatar bug.
+* Fixed screen refresh bug on post page.
+* Fixed security issue (thanks @delgermurun).
+* Fixed security issue (thanks @pcorey).
+* Added Swedish translation (thanks @Alekzanther).
+* Improved French translation (thanks @camilleroux).
+
+## v0.20.6 “AutoScope”
+
+* Added Extra CSS field (thanks @johnthepink!).
+* Fixed security issue with Settings (thanks @jshimko!).
+* Added automatic template replacement.
+
+## v0.20.5 “MinorScope”
+
+Just a couple minor bug fixes.
+
+* Changed how email template customization works (see [documentation](http://docs.telescopeapp.org/v0.20/docs/custom-templates#email-templates)).
+* Ensure email uniqueness and keep it in sync.
+* Improve profile completion screen validation & errors.
+* Generate public user properties list from schema.
+* Fixed video lightbox issue.
+* Updated Getting Started content.
+* Enforcing better URL formatting for Site URL setting.
+* Fixed notification settings.
+* Reworked user settings.
+
+## v0.20.4 “RefactorScope”
+
+See [blog](http://telescopeapp.org/blog/telescope-v020-refactorscope/) for more details. 
+
 ## v0.15.1 “PageScope”
 
 * Settings now have their own `telescope-settings` package (thanks @delgermurun!).
@@ -148,7 +187,7 @@
 * Added new setting to subscribe new user to mailing list automatically.
 * Added new `debug` setting.
 * `siteUrl` setting now affects `Meteor.absoluteUrl()`.
-* Added new `clog` function that only logs if `debug` setting is true.
+* Added new `Telescope.log` function that only logs if `debug` setting is true.
 * Simplified post module system, modules are not split in three zones anymore.
 * Added new `postThumbnail` hook to show Embedly thumbnail.
 * Simplified Hubble theme CSS for both desktop and mobile.

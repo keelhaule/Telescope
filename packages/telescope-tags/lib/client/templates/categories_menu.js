@@ -1,5 +1,8 @@
 Meteor.startup(function () {
-  Template[getTemplate('categoriesMenu')].helpers({
+  Template.categories_menu.helpers({
+    hasCategories: function () {
+      return Categories.find().count();
+    },
     menuItems: function () {
       var defaultItem = [{
         route: 'posts_default',
@@ -9,10 +12,10 @@ Meteor.startup(function () {
       var menuItems = _.map(Categories.find({}, {sort: {order: 1, name: 1}}).fetch(), function (category) {
         return {
           route: function () {
-            return getCategoryUrl(category.slug);
+            return Categories.getUrl(category.slug);
           },
           label: category.name
-        }
+        };
       });
       return defaultItem.concat(menuItems);
     },

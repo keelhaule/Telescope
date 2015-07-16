@@ -11,7 +11,7 @@ scheduleCampaign = function (campaign, isTest) {
 		var wordCount = 15;
 		var subject = campaign.subject;
 		while (subject.length >= 150){
-			subject = trimWords(subject, wordCount);
+			subject = Telescope.utils.trimWords(subject, wordCount);
 			wordCount--;
 		}
 
@@ -60,33 +60,33 @@ scheduleCampaign = function (campaign, isTest) {
         var updated = Posts.update({_id: {$in: campaign.postIds}}, {$set: {scheduledAt: new Date()}}, {multi: true})
 
       // send confirmation email
-      var confirmationHtml = getEmailTemplate('emailDigestConfirmation')({
+      var confirmationHtml = Telescope.email.getTemplate('emailDigestConfirmation')({
         time: scheduledTime,
         newsletterLink: mailchimpCampaign.archive_url,
         subject: subject
       });
-      sendEmail(defaultEmail, 'Newsletter scheduled', buildEmailTemplate(confirmationHtml));
+      Telescope.email.send(defaultEmail, 'Newsletter scheduled', Telescope.email.buildTemplate(confirmationHtml));
 
     } catch (error) {
       console.log(error);
     }
     return subject;
   }
-}
+};
 
 addToMailChimpList = function(userOrEmail, confirm, done){
 
   var user, email;
 
-  var confirm = (typeof confirm === 'undefined') ? false : confirm // default to no confirmation
+  var confirm = (typeof confirm === 'undefined') ? false : confirm; // default to no confirmation
 
   // not sure if it's really necessary that the function take both user and email?
-  if (typeof userOrEmail == "string") {
+  if (typeof userOrEmail === "string") {
     user = null;
     email = userOrEmail;
-  } else if (typeof userOrEmail == "object") {
+  } else if (typeof userOrEmail === "object") {
     user = userOrEmail;
-    email = getEmail(user);
+    email = Users.getEmail(user);
     if (!email)
       throw 'User must have an email address';
   }
@@ -113,8 +113,9 @@ addToMailChimpList = function(userOrEmail, confirm, done){
       var subscribe = api.call('lists', 'subscribe', subscribeOptions);
 
       // mark user as subscribed
-      if(!!user)
-        setUserSetting('subscribedToNewsletter', true, user);
+      if (!!user) {
+        Users.setSetting(user, 'newsletter.subscribeToNewsletter', true);
+      }
 
       console.log("// User subscribed");
 
@@ -122,7 +123,6 @@ addToMailChimpList = function(userOrEmail, confirm, done){
 
     } catch (error) {
       throw new Meteor.Error("subscription-failed", error.message);
-      console.log( error.message );
     }
   }
 };
@@ -137,10 +137,12 @@ Meteor.methods({
     }
   },
   addEmailToMailChimpList: function (email) {
-    try {
-      return addToMailChimpList(email, true);
-    } catch (error) {
-      throw new Meteor.Error(500, error.message);
+    if (Users.is.adminById(this.userId)) {
+      try {
+        return addToMailChimpList(email, true);
+      } catch (error) {
+        throw new Meteor.Error(500, error.message);
+      }
     }
   }
 });

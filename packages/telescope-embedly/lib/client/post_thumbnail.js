@@ -1,19 +1,19 @@
-Template[getTemplate('postThumbnail')].helpers({
+Template.post_thumbnail.helpers({
   postLink: function () {
-    return !!this.url ? getOutgoingUrl(this.url) : "/posts/"+this._id;
+    return Posts.getLink(this);
+  },
+  target: function () {
+    return !!this.url? "_blank" : "";
   },
   playVideoClass: function () {
     return !!this.media ? 'post-thumbnail-has-video': '';
-  },
-  videoTemplate: function () {
-    return getTemplate('postVideo');
   }
 });
 
-Template[getTemplate('postThumbnail')].events({
+Template.post_thumbnail.events({
   'click .post-thumbnail-has-video': function (e) {
     e.preventDefault();
     $('body').addClass('showing-lightbox');
     $(e.target).parents('.post').find('.post-video-lightbox').fadeIn('fast');
   }
-})
+});

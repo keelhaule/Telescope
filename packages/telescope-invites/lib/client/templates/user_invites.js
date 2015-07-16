@@ -1,4 +1,4 @@
-Template[getTemplate('userInvites')].created = function () {
+Template.user_invites.created = function () {
 
   var user = this.data;
   var instance = this;
@@ -12,10 +12,10 @@ Template[getTemplate('userInvites')].created = function () {
   });
 };
 
-Template[getTemplate('userInvites')].helpers({
+Template.user_invites.helpers({
   canCurrentUserInvite: function () {
     var currentUser = Meteor.user();
-    return currentUser && (currentUser.inviteCount > 0 && can.invite(currentUser));
+    return currentUser && (Users.is.admin(currentUser) || currentUser.inviteCount > 0 && Users.can.invite(currentUser));
   },
   invitesLeft: function () {
     var currentUser = Meteor.user();
@@ -23,7 +23,7 @@ Template[getTemplate('userInvites')].helpers({
   },
   invitesSchema: function () {
     // expose schema for Invites (used by AutoForm)
-    return InviteSchema;
+    return Invites.simpleSchema();
   },
   invites: function () {
     return Template.instance().invites.get();
@@ -39,7 +39,7 @@ var scrollUp = function(){
 
 AutoForm.hooks({
   inviteForm: {
-    onSuccess: function(operation, result, template) {
+    onSuccess: function(operation, result) {
       Messages.clearSeen();
 
       if(result && result.newUser){
@@ -50,7 +50,7 @@ AutoForm.hooks({
       scrollUp();
     },
 
-    onError: function(operation, error, template) {
+    onError: function(operation, error) {
       Messages.clearSeen();
 
       if(error && error.reason){
